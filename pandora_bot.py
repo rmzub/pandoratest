@@ -145,8 +145,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # main
 def main():
-    token = os.getenv("BOT_TOKEN")
-    app = ApplicationBuilder().token(token).build()
+    app = ApplicationBuilder().token("7491368320:AAEnRYGYWj_UuDx62RuHAytDmZjAJJ0J1Ps").build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("startgame", startgame))
     app.add_handler(CallbackQueryHandler(button_handler))
