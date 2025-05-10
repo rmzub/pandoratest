@@ -126,13 +126,13 @@ async def end_guessing(context: ContextTypes.DEFAULT_TYPE):
     await show_score(context)
 
 # Показати рахунок
-async def show_score(context: ContextTypes.DEFAULT_TYPE):
-    score_text = "📊 Поточний рахунок:
-" + "
-".join(
-        [f"{v['name']}: {v['score']} балів" for v in players.values()]
-    )
-    await context.bot.send_message(chat_id=list(joined_players)[0], text=score_text)
+# 📊 Рахунок
+async def score(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = "🏆 Рахунок:\n" + "\n".join([f"{v['name']}: {v['score']} балів" for v in players.values()])
+    if update.callback_query:
+        await update.callback_query.edit_message_text(text)
+    else:
+        await update.message.reply_text(text)
 
 # /start просто реєструє
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
