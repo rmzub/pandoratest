@@ -112,12 +112,11 @@ async def show_random(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 for uid, data in players.items() if uid != host_id]
     markup = InlineKeyboardMarkup(keyboard)
 
-    await context.bot.send_message(chat_id=update.effective_chat.id,
-        text=f"📜 Випадкова відповідь:
-«*{random_answer[1]}*»
-
-🕵️ Хто це написав?",
-        parse_mode="Markdown", reply_markup=markup)
+    await context.bot.send_message(
+    chat_id=update.effective_chat.id,
+    text=f"📜 *Випадкова відповідь:*\n«⭑{random_answer[1]}⭑»\n\n🕵️ Хто це написав?",
+    parse_mode="Markdown",
+    reply_markup=markup)
 
 # 🎯 Обробка вгадування
 async def process_guess(update: Update, context: ContextTypes.DEFAULT_TYPE, guessed_id: int):
