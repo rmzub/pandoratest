@@ -95,6 +95,7 @@ async def collect_answers(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def end_collection(context: ContextTypes.DEFAULT_TYPE):
     global collecting, random_answer, guessing
     collecting = False
+
     if not answers:
         await context.bot.send_message(chat_id=list(joined_players)[0], text="❌ Немає відповідей.")
         return
@@ -103,19 +104,32 @@ async def end_collection(context: ContextTypes.DEFAULT_TYPE):
     random_answer = (random_id, answers[random_id])
     guessing = True
 
-    keyboard = [
-        [InlineKeyboardButton(players[uid]["name"], callback_data=f"guess_{uid}")]
-        for uid in joined_players if uid != host_id
-    ]
-    markup = InlineKeyboardMarkup(keyboard)
+    for uid in joined_players:
+        if uid == random_id or uid == host_id:
+            continue  # не надсилаємо автору чи ведучому
 
+        keyboard = [
+            [InlineKeyboardButton(players[pid]["name"], callback_data=f"guess_{pid}")]
+            for pid in joined_players if pid != uid and pid != host_id
+        ]
+        markup = InlineKeyboardMarkup(keyboard)
+
+        await context.bot.send_message(
+            chat_id=uid,
+            text=f"📜 *Ось випадкова відповідь:*\n«{random_answer[1]}»\n\n🕵️ Як думаєш, хто це написав?",
+            parse_mode="Markdown",
+            reply_markup=markup
+        )
+
+    # Ведучому — нагадування в групу
     await context.bot.send_message(
-    chat_id=update.effective_chat.id,
-    text=f"📜 *Випадкова відповідь:*\n«⭑{random_answer[1]}⭑»\n\n🕵️ Хто це написав?",
-    parse_mode="Markdown",
-    reply_markup=markup)
+        chat_id=list(joined_players)[0],
+        text="📨 Гравцям надіслано запит для вгадування у приват. Результати за 60 секунд..."
+    )
+
     await asyncio.sleep(60)
     await end_guessing(context)
+
 
 # Вгадування
 async def process_guess(update: Update, context: ContextTypes.DEFAULT_TYPE, guessed_id: int):
