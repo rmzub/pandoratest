@@ -93,14 +93,10 @@ async def end_collection(context: ContextTypes.DEFAULT_TYPE):
     markup = InlineKeyboardMarkup(keyboard)
 
     await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text=f"📜 *Випадкова відповідь:*
-«⭑{random_answer[1]}⭑»
-
-🕵️ Хто це написав?",
-        parse_mode="Markdown",
-        reply_markup=markup
-    )
+    chat_id=update.effective_chat.id,
+    text=f"📜 *Випадкова відповідь:*\n«⭑{random_answer[1]}⭑»\n\n🕵️ Хто це написав?",
+    parse_mode="Markdown",
+    reply_markup=markup)
     await asyncio.sleep(60)
     await end_guessing(context)
 
@@ -136,13 +132,12 @@ async def end_guessing(context: ContextTypes.DEFAULT_TYPE):
     await show_score(context)
 
 # Рахунок
-async def show_score(context: ContextTypes.DEFAULT_TYPE):
-    score_text = "📊 Поточний рахунок:
-" + "
-".join(
-        [f"{v['name']}: {v['score']} балів" for v in players.values()]
-    )
-    await context.bot.send_message(chat_id=list(joined_players)[0], text=score_text)
+async def score(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = "🏆 Рахунок:\n" + "\n".join([f"{v['name']}: {v['score']} балів" for v in players.values()])
+    if update.callback_query:
+        await update.callback_query.edit_message_text(text)
+    else:
+        await update.message.reply_text(text)
 
 # /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
