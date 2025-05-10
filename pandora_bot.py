@@ -58,11 +58,20 @@ async def begin_round(update: Update, context: ContextTypes.DEFAULT_TYPE):
     guessed.clear()
     collecting = True
     guessing = False
+
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="🧠 Почали! У вас є 90 секунд на відповідь. Пишіть прямо в чат."
+        text="🧠 Почали! Учасники мають 60 секунд, щоб надіслати відповідь у *приватному чаті* з ботом."
     )
-    await asyncio.sleep(90)
+
+    for uid in joined_players:
+        if uid != host_id:
+            await context.bot.send_message(
+                chat_id=uid,
+                text="✍️ Напиши свою відповідь на запитання у відповідь на це повідомлення."
+            )
+
+    await asyncio.sleep(60)
     if collecting:
         await end_collection(context)
 
@@ -70,9 +79,17 @@ async def begin_round(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def collect_answers(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global collecting
     user = update.effective_user
+
+    # Приймаємо лише приватні повідомлення від гравців
+    if update.message.chat.type != "private":
+        return
+
     if collecting and user.id in joined_players and user.id not in answers:
         answers[user.id] = update.message.text
-        await update.message.reply_text("✅ Ваша відповідь записана!")
+        await update.message.reply_text("✅ Ваша відповідь збережена.")
+    elif not collecting:
+        await update.message.reply_text("⚠️ Збір відповідей вже завершено.")
+
 
 # Завершення збору
 async def end_collection(context: ContextTypes.DEFAULT_TYPE):
@@ -104,11 +121,23 @@ async def end_collection(context: ContextTypes.DEFAULT_TYPE):
 async def process_guess(update: Update, context: ContextTypes.DEFAULT_TYPE, guessed_id: int):
     global guessed
     user = update.effective_user
+
+    # Приймаємо вгадування лише в приваті
+    if update.callback_query.message.chat.type != "private":
+        await update.callback_query.answer("❗ Вгадування відбувається лише у приваті.")
+        return
+
+    if user.id not in joined_players:
+        await update.callback_query.answer("🚫 Ви не в грі.")
+        return
+
     if user.id in guessed:
         await update.callback_query.answer("❗ Ви вже проголосували.")
         return
+
     guessed[user.id] = guessed_id
     await update.callback_query.answer("✅ Ваш варіант збережено!")
+    await context.bot.send_message(chat_id=user.id, text="🕵️ Ваш варіант прийнято!")
 
 # Підбиття результатів
 async def end_guessing(context: ContextTypes.DEFAULT_TYPE):
