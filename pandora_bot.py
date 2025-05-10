@@ -111,7 +111,7 @@ async def score(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text)
 
 def main():
-    app = ApplicationBuilder().token("YOUR_BOT_TOKEN_HERE").build()
+    app = ApplicationBuilder().token("7491368320:AAEnRYGYWj_UuDx62RuHAytDmZjAJJ0J1Ps").build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("begin_round", begin_round))
     app.add_handler(CommandHandler("score", score))
