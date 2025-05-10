@@ -87,14 +87,10 @@ async def end_collection(context: ContextTypes.DEFAULT_TYPE):
     markup = InlineKeyboardMarkup(keyboard)
 
     await context.bot.send_message(
-        chat_id=list(joined_players)[0],
-        text=f"📜 *Випадкова відповідь:*
-«⭑{random_answer[1]}⭑»
-
-🕵️ Хто це написав?",
-        parse_mode="Markdown",
-        reply_markup=markup
-    )
+    chat_id=update.effective_chat.id,
+    text=f"📜 *Випадкова відповідь:*\n«⭑{random_answer[1]}⭑»\n\n🕵️ Хто це написав?",
+    parse_mode="Markdown",
+    reply_markup=markup)
     await asyncio.sleep(60)
     await end_guessing(context)
 
@@ -143,7 +139,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Вітаю! Напиши /startgame щоб почати нову гру.")
 
 def main():
-    app = ApplicationBuilder().token("YOUR_BOT_TOKEN_HERE").build()
+    app = ApplicationBuilder().token("7491368320:AAEnRYGYWj_UuDx62RuHAytDmZjAJJ0J1Ps").build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("startgame", startgame))
     app.add_handler(CallbackQueryHandler(button_handler))
