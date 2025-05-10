@@ -105,8 +105,8 @@ async def end_collection(context: ContextTypes.DEFAULT_TYPE):
     guessing = True
 
     for uid in joined_players:
-    if uid == host_id:
-        continue
+        if uid == host_id:
+            continue
 
         keyboard = [
             [InlineKeyboardButton(players[pid]["name"], callback_data=f"guess_{pid}")]
@@ -186,6 +186,17 @@ async def score(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Вітаю! Напиши /startgame щоб почати нову гру.")
 
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "📖 *Правила гри Скринька Пандори:*\n"
+        "1. Ведучий запускає гру командою /startgame\n"
+        "2. Гравці натискають «Долучитись»\n"
+        "3. Кожен отримує завдання у приват — відповісти або вгадати\n"
+        "4. За правильні вгадування — гравці отримують бали\n"
+        "5. Перемагає найкмітливіший 🧠",
+        parse_mode="Markdown"
+    )
+
 # main
 def main():
     app = ApplicationBuilder().token("7491368320:AAEnRYGYWj_UuDx62RuHAytDmZjAJJ0J1Ps").build()
@@ -193,6 +204,7 @@ def main():
     app.add_handler(CommandHandler("startgame", startgame))
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, collect_answers))
+    app.add_handler(CommandHandler("help", help_command))
     app.run_polling()
 
 if __name__ == "__main__":
