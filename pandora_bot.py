@@ -105,8 +105,8 @@ async def end_collection(context: ContextTypes.DEFAULT_TYPE):
     guessing = True
 
     for uid in joined_players:
-        if uid == random_id or uid == host_id:
-            continue  # не надсилаємо автору чи ведучому
+    if uid == host_id:
+        continue
 
         keyboard = [
             [InlineKeyboardButton(players[pid]["name"], callback_data=f"guess_{pid}")]
