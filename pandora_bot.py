@@ -62,9 +62,9 @@ async def begin_round(update: Update, context: ContextTypes.DEFAULT_TYPE, button
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("✍️ Надіслати відповідь", callback_data="submit_answer")]])
     msg_func = update.callback_query.edit_message_text if button else update.message.reply_text
 
-    await msg_func("""📣 *Новий раунд розпочато!*
-⏳ У вас є *60 секунд*, щоб надіслати відповідь."""
-        parse_mode="Markdown", reply_markup=reply_markup)
+    await msg_func("🧠 *Новий раунд розпочато!*\\n⏳ У вас є *60 секунд*, щоб надіслати відповідь.",
+               parse_mode="Markdown", reply_markup=reply_markup)
+
 
     await asyncio.sleep(60)
     collecting = False
@@ -135,8 +135,7 @@ async def process_guess(update: Update, context: ContextTypes.DEFAULT_TYPE, gues
 
 # 📊 Рахунок
 async def score(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = "🏆 Рахунок:
-" + "\n".join([f"{v['name']}: {v['score']} балів" for v in players.values()])
+    text = "🏆 Рахунок:\n" + "\n".join([f"{v['name']}: {v['score']} балів" for v in players.values()])
     if update.callback_query:
         await update.callback_query.edit_message_text(text)
     else:
