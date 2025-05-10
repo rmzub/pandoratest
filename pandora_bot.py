@@ -6,8 +6,7 @@ from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 
 # Load environment variables (for your bot token)
-load_dotenv()
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") # Make sure you have TELEGRAM_BOT_TOKEN in your .env file
+BOT_TOKEN = "7491368320:AAEnRYGYWj_UuDx62RuHAytDmZjAJJ0J1Ps" # Make sure you have TELEGRAM_BOT_TOKEN in your .env file
 
 # Global game state variables
 players = {}  # Stores player data {user_id: {"name": "username", "score": 0}}
